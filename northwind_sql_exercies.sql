@@ -369,7 +369,7 @@ SELECT * FROM customers WHERE city IN ('Londra', 'Paris');
 
 --73. Hem Mexico D.F’da ikamet eden HEM DE ContactTitle bilgisi ‘owner’ olan müşteriler
 
-SELECT * FROM customers WHERE city = 'México D.F.' AND contact_title = 'owner';
+SELECT * FROM customers WHERE city = 'México D.F.' AND contact_title = 'Owner';
 
 --74. C ile başlayan ürünlerimin isimleri ve fiyatları
 
@@ -381,7 +381,7 @@ select first_name, last_name, birth_date from employees where first_name like 'A
 
 --76. İsminde ‘RESTAURANT’ geçen müşterilerimin şirket adları
 
-select company_name from customers where company_name like '%RESTAURANT%';
+select company_name from customers where company_name like '%Restaurant%';
 
 --77. 50$ ile 100$ arasında bulunan tüm ürünlerin adları ve fiyatları
 
@@ -393,7 +393,7 @@ select order_id, order_date from orders where order_date BETWEEN '1996-07-01' an
 
 --79. Ülkesi (Country) YA Spain, Ya France, Ya da Germany olan müşteriler
 
-SELECT * FROM customers WHERE country not in ('Brazil', 'Spain', 'France', 'Germany');
+SELECT * FROM customers WHERE country in ('Brazil', 'Spain', 'France', 'Germany');
 
 --80. Faks numarasını bilmediğim müşteriler
 
@@ -433,11 +433,14 @@ SELECT product_name, unit_price FROM products order by unit_price desc LIMIT 5;
 
 --88. ALFKI CustomerID’sine sahip müşterimin sipariş sayısı..?
 
-select count(*) from customers where customer_id = 'ALFKI';
+select count(*) from customers as c
+join orders as o
+on o.customer_id = c.customer_id
+where c.customer_id = 'ALFKI';
 
 --89. Ürünlerimin toplam maliyeti
 
-select sum(unit_price) from products;
+select sum(unit_price * units_in_stock) from products;
 
 --90. Şirketim, şimdiye kadar ne kadar ciro yapmış..?
 
@@ -496,7 +499,7 @@ GROUP by od.order_id;
 
 --98. Hangi kategoride toplam kaç adet ürün bulunuyor..?
 
-SELECT c.category_id,COUNT(*) FROM categories AS c
+SELECT c.category_id,COUNT(p.*) FROM categories AS c
 JOIN products AS p 
 ON p.category_id = c.category_id
 GROUP BY c.category_id;
@@ -598,7 +601,7 @@ select * from customers where contact_title like '%Manager%';
 
 --111. FR ile başlayan 5 karekter olan tüm müşterileri listeleyiniz.
 
-select * from customers where contact_name like 'FR___%';
+select * from customers where customer_id like 'FR___';
 
 --112. (171) alan kodlu telefon numarasına sahip müşterileri listeleyiniz.
 
@@ -610,7 +613,7 @@ select * from products where quantity_per_unit like '%boxes%';
 
 --114. Fransa ve Almanyadaki (France,Germany) Müdürlerin (Manager) Adını ve Telefonunu listeleyiniz.(MusteriAdi,Telefon)
 
-select contact_name, phone from customers where contact_title like '%Manager%';
+select contact_name, phone from customers where contact_title like '%Manager%' and (country='France' or country='Germany');
 
 --115. En yüksek birim fiyata sahip 10 ürünü listeleyiniz.
 
@@ -619,7 +622,6 @@ select * from products order by unit_price desc limit 10;
 --116. Müşterileri ülke ve şehir bilgisine göre sıralayıp listeleyiniz.
 
 SELECT * FROM customers ORDER BY country, city;
-
 
 --117. Personellerin ad,soyad ve yaş bilgilerini listeleyiniz.
 
